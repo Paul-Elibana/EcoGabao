@@ -1,0 +1,29 @@
+# Environnements virtuels
+ecom/
+.venv/
+env/
+venv/
+
+# Secrets
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+
+# Django
+media/
+staticfiles/
+db.sqlite3
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
