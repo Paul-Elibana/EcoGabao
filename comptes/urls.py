@@ -1,9 +1,9 @@
 from django.urls import path
-from .views import InscriptionView, ProfilView
-
-app_name = 'comptes'
+from . import views
 
 urlpatterns = [
-    path('inscription/', InscriptionView.as_view(), name='inscription'),
-    path('profil/', ProfilView.as_view(), name='profil'),
+    path('inscription/', views.inscription, name='inscription'),
+    path('connexion/', views.connexion, name='connexion'),
+    path('deconnexion/', views.deconnexion, name='deconnexion'),
+    path('profil/', views.profil, name='profil'),
 ]

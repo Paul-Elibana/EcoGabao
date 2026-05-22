@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block titre %}EcoGabao{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; }
+        .navbar-brand { font-weight: 700; font-size: 1.5rem; color: #1a7431 !important; }
+        .navbar { background-color: #ffffff; border-bottom: 2px solid #1a7431; }
+        .btn-primary { background-color: #1a7431; border-color: #1a7431; }
+        .btn-primary:hover { background-color: #145a26; border-color: #145a26; }
+        .card { transition: transform 0.2s; }
+        .card:hover { transform: translateY(-3px); box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .badge-panier { background-color: #e74c3c; }
+        footer { background-color: #1a7431; color: white; }
+    </style>
+    {% block styles %}{% endblock %}
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light shadow-sm">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'accueil' %}">
+            <i class="bi bi-tree"></i> EcoGabao
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarMain">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'accueil' %}">
+                        <i class="bi bi-house"></i> Accueil
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'liste_produits' %}">
+                        <i class="bi bi-grid"></i> Produits
+                    </a>
+                </li>
+            </ul>
+
+            <ul class="navbar-nav">
+                <!-- Panier -->
+                <li class="nav-item me-2">
+                    <a class="nav-link position-relative" href="{% url 'panier' %}">
+                        <i class="bi bi-cart3 fs-5"></i>
+                        {% with nb=request.session.panier %}
+                            {% if nb %}
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill badge-panier">
+                                    {{ nb|length }}
+                                </span>
+                            {% endif %}
+                        {% endwith %}
+                        Panier
+                    </a>
+                </li>
+
+                {% if user.is_authenticated %}
+                <!-- Dropdown Mon compte -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        <i class="bi bi-person-circle"></i> {{ user.username }}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <a class="dropdown-item" href="{% url 'profil' %}">
+                                <i class="bi bi-person"></i> Mon profil
+                            </a>
+                        </li>
+                        {% if user.profil.est_vendeur %}
+                        <li>
+                            <a class="dropdown-item" href="{% url 'mes_produits' %}">
+                                <i class="bi bi-box-seam"></i> Mes produits
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{% url 'ajouter_produit' %}">
+                                <i class="bi bi-plus-circle"></i> Ajouter un produit
+                            </a>
+                        </li>
+                        {% endif %}
+                        <li>
+                            <a class="dropdown-item" href="{% url 'mes_commandes' %}">
+                                <i class="bi bi-bag-check"></i> Mes commandes
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item text-danger" href="{% url 'deconnexion' %}">
+                                <i class="bi bi-box-arrow-right"></i> Se déconnecter
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'connexion' %}">
+                        <i class="bi bi-box-arrow-in-right"></i> Connexion
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="btn btn-primary btn-sm ms-2" href="{% url 'inscription' %}">
+                        Inscription
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Messages -->
+<div class="container mt-3">
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    {% endfor %}
+</div>
+
+<!-- Contenu principal -->
+<main class="container my-4">
+    {% block content %}{% endblock %}
+</main>
+
+<!-- Footer -->
+<footer class="py-4 mt-5">
+    <div class="container text-center">
+        <p class="mb-1"><strong>EcoGabao</strong> — Marketplace du Gabon</p>
+        <small>&copy; 2026 EcoGabao. Tous droits réservés.</small>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

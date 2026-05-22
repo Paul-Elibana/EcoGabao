@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block titre %}Tous les produits — EcoGabao{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-grid"></i> Tous les produits</h2>
+
+<div class="row">
+    <!-- Filtre catégories (colonne gauche) -->
+    <div class="col-md-3 mb-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-success text-white">
+                <h6 class="mb-0"><i class="bi bi-funnel"></i> Catégories</h6>
+            </div>
+            <div class="list-group list-group-flush">
+                <a href="{% url 'liste_produits' %}"
+                   class="list-group-item list-group-item-action {% if not categorie_selectionnee %}active{% endif %}">
+                    <i class="bi bi-grid-3x3"></i> Toutes les catégories
+                </a>
+                {% for cat in categories %}
+                <a href="{% url 'liste_produits' %}?categorie={{ cat.pk }}"
+                   class="list-group-item list-group-item-action {% if categorie_selectionnee.pk == cat.pk %}active{% endif %}">
+                    {{ cat.nom }}
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Grille de produits -->
+    <div class="col-md-9">
+        {% if categorie_selectionnee %}
+        <div class="d-flex align-items-center mb-3">
+            <h5 class="mb-0 me-2">Catégorie : <strong>{{ categorie_selectionnee.nom }}</strong></h5>
+            <a href="{% url 'liste_produits' %}" class="btn btn-sm btn-outline-secondary">
+                <i class="bi bi-x"></i> Réinitialiser
+            </a>
+        </div>
+        {% endif %}
+
+        <p class="text-muted small mb-3">{{ produits|length }} produit{{ produits|length|pluralize }} trouvé{{ produits|length|pluralize }}</p>
+
+        {% if produits %}
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">
+            {% for produit in produits %}
+            <div class="col">
+                <div class="card h-100 border-0 shadow-sm">
+                    {% if produit.image %}
+                        <img src="{{ produit.image.url }}" class="card-img-top" alt="{{ produit.nom }}"
+                             style="height: 180px; object-fit: cover;">
+                    {% else %}
+                        <div class="bg-light d-flex align-items-center justify-content-center"
+                             style="height: 180px;">
+                            <i class="bi bi-image text-muted fs-1"></i>
+                        </div>
+                    {% endif %}
+                    <div class="card-body d-flex flex-column">
+                        <h6 class="card-title">{{ produit.nom }}</h6>
+                        {% if produit.categorie %}
+                            <span class="badge bg-success mb-2" style="width: fit-content; font-size: 0.75rem;">
+                                {{ produit.categorie }}
+                            </span>
+                        {% endif %}
+                        <p class="card-text text-muted small flex-grow-1">
+                            {{ produit.description|truncatechars:70 }}
+                        </p>
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                            <strong class="text-success">{{ produit.prix|floatformat:0 }} FCFA</strong>
+                            <span class="badge bg-secondary small">{{ produit.get_etat_display }}</span>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-white border-0">
+                        <a href="{% url 'detail_produit' produit.pk %}" class="btn btn-outline-success w-100 btn-sm">
+                            <i class="bi bi-eye"></i> Voir le produit
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-search text-muted" style="font-size: 3rem;"></i>
+            <h5 class="mt-3 text-muted">Aucun produit dans cette catégorie.</h5>
+            <a href="{% url 'liste_produits' %}" class="btn btn-outline-primary mt-2">Voir tous les produits</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

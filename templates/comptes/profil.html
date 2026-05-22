@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block titre %}Mon profil — EcoGabao{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Carte profil -->
+    <div class="col-md-4 mb-4">
+        <div class="card border-0 shadow-sm text-center">
+            <div class="card-body py-4">
+                {% if profil.photo %}
+                    <img src="{{ profil.photo.url }}" alt="Photo de profil"
+                         class="rounded-circle mb-3" style="width: 120px; height: 120px; object-fit: cover;">
+                {% else %}
+                    <div class="rounded-circle bg-success d-inline-flex align-items-center justify-content-center mb-3"
+                         style="width: 120px; height: 120px;">
+                        <i class="bi bi-person-fill text-white" style="font-size: 3rem;"></i>
+                    </div>
+                {% endif %}
+
+                <h5 class="mb-1">{{ user.get_full_name|default:user.username }}</h5>
+                <p class="text-muted mb-2">@{{ user.username }}</p>
+                <span class="badge {% if profil.est_vendeur %}bg-warning text-dark{% else %}bg-primary{% endif %} fs-6">
+                    {% if profil.est_vendeur %}
+                        <i class="bi bi-shop"></i> Vendeur
+                    {% else %}
+                        <i class="bi bi-bag"></i> Acheteur
+                    {% endif %}
+                </span>
+
+                <hr>
+
+                <div class="text-start small">
+                    <p class="mb-1">
+                        <i class="bi bi-envelope text-muted"></i>
+                        <strong>E-mail :</strong> {{ user.email|default:"Non renseigné" }}
+                    </p>
+                    {% if profil.telephone %}
+                    <p class="mb-1">
+                        <i class="bi bi-telephone text-muted"></i>
+                        <strong>Téléphone :</strong> {{ profil.telephone }}
+                    </p>
+                    {% endif %}
+                    {% if profil.ville %}
+                    <p class="mb-1">
+                        <i class="bi bi-geo-alt text-muted"></i>
+                        <strong>Ville :</strong> {{ profil.ville }}
+                    </p>
+                    {% endif %}
+                    <p class="mb-0">
+                        <i class="bi bi-calendar text-muted"></i>
+                        <strong>Membre depuis :</strong> {{ user.date_joined|date:"d/m/Y" }}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        {% if profil.est_vendeur %}
+        <div class="card border-0 shadow-sm mt-3">
+            <div class="card-body">
+                <h6 class="text-success"><i class="bi bi-shop"></i> Espace vendeur</h6>
+                <a href="{% url 'mes_produits' %}" class="btn btn-outline-success btn-sm w-100 mb-2">
+                    <i class="bi bi-box-seam"></i> Mes produits
+                </a>
+                <a href="{% url 'ajouter_produit' %}" class="btn btn-success btn-sm w-100">
+                    <i class="bi bi-plus-circle"></i> Ajouter un produit
+                </a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Formulaire de modification -->
+    <div class="col-md-8">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"><i class="bi bi-pencil"></i> Modifier mon profil</h5>
+            </div>
+            <div class="card-body p-4">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    {% for field in form %}
+                    <div class="mb-3">
+                        <label for="{{ field.id_for_label }}" class="form-label fw-semibold">
+                            {{ field.label }}
+                        </label>
+                        {{ field }}
+                        {% if field.help_text %}
+                            <div class="form-text text-muted">{{ field.help_text }}</div>
+                        {% endif %}
+                        {% for error in field.errors %}
+                            <div class="text-danger small mt-1">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    {% endfor %}
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-lg"></i> Enregistrer les modifications
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

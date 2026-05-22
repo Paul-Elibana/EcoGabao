@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: ecogabao
+    env: python
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn config.wsgi:application"
+    envVars:
+      - key: DEBUG
+        value: False
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: ecogabao-db
+          property: connectionString
+
+databases:
+  - name: ecogabao-db
+    databaseName: ecogabao
+    user: ecogabao

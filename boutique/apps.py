@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class ComptesConfig(AppConfig):
+class BoutiqueConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'comptes'
+    name = 'boutique'
